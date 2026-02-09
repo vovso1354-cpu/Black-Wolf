@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --container-bg: rgba(15, 15, 15, 0.95);
+            --point-red: #8b0000;
+            --point-gold: #c2a37e;
+            --text-white: #e0e0e0;
+            --text-dim: #777;
+        }
+
+        /* --- 초기 설정 --- */
+        * { scroll-behavior: smooth; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Nanum Myeongjo', serif;
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: hidden; 
+        }
+
+        /* --- 인트로 오버레이 --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .intro-title {
+            font-size: 3.5rem;
+            letter-spacing: 15px;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 25px var(--point-red); 
+            opacity: 0;
+            animation: glitchFade 3.5s forwards;
+        }
+
+        @keyframes glitchFade {
+            0% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+            15% { opacity: 1; filter: blur(0); }
+            85% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.95); }
+        }
+
+        /* --- 오디오 경고 모달 --- */
+        #audio-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10002;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #111;
+            border: 1px solid var(--point-red);
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.3);
+        }
+
+        .modal-content h3 { color: var(--point-red); letter-spacing: 5px; margin-bottom: 20px; }
+        .modal-content p { font-size: 0.9rem; line-height: 1.8; color: #ccc; margin-bottom: 30px; }
+
+        .modal-btn {
+            background: transparent;
+            color: var(--point-gold);
+            border: 1px solid var(--point-gold);
+            padding: 10px 30px;
+            cursor: pointer;
+            font-family: 'Nanum Myeongjo', serif;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+        .modal-btn:hover { background: var(--point-red); color: white; border-color: var(--point-red); }
+
+        /* --- 네비게이션 메뉴 --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--point-red);
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+        }
+        nav a { color: var(--text-dim); text-decoration: none; margin: 0 15px; font-size: 0.85rem; letter-spacing: 2px; transition: 0.3s; }
+        nav a:hover { color: var(--point-red); text-shadow: 0 0 8px var(--point-red); }
+
+        /* --- 메인 컨텐츠 영역 --- */
+        #main-wrapper {
+            opacity: 0;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 40px 20px;
+        }
+
+        section { padding: 80px 0; border-bottom: 1px solid #1a1a1a; }
+        h2.section-title {
+            color: var(--point-gold);
+            font-size: 1.8rem;
+            border-left: 4px solid var(--point-red);
+            padding-left: 15px;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        /* --- 프로필 섹션 --- */
+        .profile-card { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; background: var(--container-bg); padding: 30px; border: 1px solid #222; }
+        .profile-img { width: 100%; height: 420px; border: 1px solid #333; overflow: hidden; position: relative; }
+        .profile-img img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(0.9); }
+        .profile-img::after { content: "WANTED"; position: absolute; top: 10px; left: 10px; background: var(--point-red); color: white; padding: 2px 10px; font-weight: bold; font-size: 0.8rem; }
+        
+        .info-list { list-style: none; padding: 0; }
+        .info-list li { margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 5px; font-size: 0.95rem; }
+        .info-list b { color: var(--point-gold); width: 100px; display: inline-block; font-weight: 700; }
+        .status-tag { color: var(--point-red); font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* --- 사진첩 --- */
+        .gallery-container { width: 100%; overflow-x: auto; padding-bottom: 20px; }
+        .gallery-container::-webkit-scrollbar { height: 4px; }
+        .gallery-container::-webkit-scrollbar-track { background: #111; }
+        .gallery-container::-webkit-scrollbar-thumb { background: var(--point-red); }
+
+        .gallery-grid { display: grid; grid-template-columns: repeat(14, 220px); gap: 15px; margin-top: 20px; }
+        .gallery-item { position: relative; aspect-ratio: 1 / 1.3; overflow: hidden; border: 1px solid #222; cursor: pointer; background: #111; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.6); transition: 0.5s; }
+        .gallery-item:hover img { filter: grayscale(0); transform: scale(1.05); }
+        .gallery-item .caption { position: absolute; bottom: 0; width: 100%; background: rgba(139, 0, 0, 0.85); color: #fff; font-size: 0.7rem; padding: 8px; text-align: center; transform: translateY(100%); transition: 0.3s; letter-spacing: 1px; }
+        .gallery-item:hover .caption { transform: translateY(0); }
+
+        /* --- 성인 제한 갤러리 --- */
+        .restricted-gallery { margin-top: 50px; padding: 30px; border: 1px double var(--point-red); background: rgba(20, 0, 0, 0.3); text-align: center; }
+        .adult-warning { color: var(--point-red); font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 2px; }
+        .restricted-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .restricted-item { border: 1px solid var(--point-red); aspect-ratio: 1 / 1.3; overflow: hidden; }
+        .restricted-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- 관계도 및 조직도 --- */
+        .relation-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .relation-table th, td { padding: 15px; border: 1px solid #222; text-align: center; font-size: 0.9rem; }
+        .relation-table th { background: #150000; color: var(--point-gold); }
+        .enemy { color: var(--point-red); font-weight: bold; }
+
+        .org-box { background: rgba(20, 0, 0, 0.5); padding: 25px; border: 1px dashed var(--point-red); margin-top: 20px; }
+        .org-box h3 { color: var(--point-red); margin-top: 0; letter-spacing: 2px; font-size: 1.1rem; }
+
+        /* --- 히든 섹션 --- */
+        .hidden-content { background: #0a0a0a; border: 1px solid #333; padding: 40px; line-height: 2.2; position: relative; box-shadow: inset 0 0 30px #000; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .stamp { position: absolute; top: 20px; right: 40px; border: 3px solid var(--point-red); color: var(--point-red); padding: 5px 15px; font-weight: 900; transform: rotate(15deg); opacity: 0.7; font-size: 1.2rem; display: none; }
+        #pw-container { text-align: center; width: 100%; }
+        #pw-input { background: #000; border: 1px solid var(--point-gold); color: var(--text-white); padding: 10px; width: 200px; text-align: center; font-family: 'Nanum Myeongjo', serif; letter-spacing: 2px; outline: none; }
+        #pw-btn { background: var(--point-red); color: white; border: none; padding: 10px 20px; cursor: pointer; margin-top: 15px; font-family: 'Nanum Myeongjo', serif; transition: 0.3s; }
+        #pw-btn:hover { background: #5a0000; }
+        #hidden-data { display: none; width: 100%; }
+
+        .footer { text-align: center; font-size: 0.8rem; color: var(--text-dim); margin-top: 50px; letter-spacing: 2px; padding: 20px; cursor: help; }
+
+        /* --- [이스터에그] 서신 모달 스타일 --- */
+        #easter-egg-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 20000;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .letter-paper {
+            background: #0d0d0d; border: 1px solid var(--point-gold);
+            padding: 50px; max-width: 550px; width: 90%;
+            position: relative; box-shadow: 0 0 50px rgba(194, 163, 126, 0.15);
+            max-height: 85vh; overflow-y: auto;
+        }
+        .letter-paper::before {
+            content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(194, 163, 126, 0.2); pointer-events: none;
+        }
+        .letter-text {
+            color: #dcdcdc; line-height: 2.2; font-size: 1rem;
+            white-space: pre-line; word-break: keep-all;
+        }
+        .letter-close {
+            display: block; margin: 30px auto 0; background: transparent;
+            color: var(--point-red); border: 1px solid var(--point-red);
+            padding: 8px 20px; cursor: pointer; font-family: 'Nanum Myeongjo', serif;
+        }
+
+        @media (max-width: 600px) { .profile-card { grid-template-columns: 1fr; } nav a { margin: 0 5px; font-size: 0.65rem; } .gallery-grid { grid-template-columns: repeat(14, 180px); } .restricted-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<audio id="bg-music" src="1.mp3" loop></audio>
+
+<div id="intro-overlay">
+    <div class="intro-title">검은 겨울 작전</div>
+</div>
+
+<div id="audio-modal">
+    <div class="modal-content">
+        <h3>WARNING</h3>
+        <p>본 기밀 문서는 시청각 자료를 포함하고 있습니다.<br>데이터 복원 시 <strong>배경 음악</strong>이 자동 재생됩니다.<br><br>열람을 계속하시겠습니까?</p>
+        <button class="modal-btn" onclick="startApp()">데이터 복원 및 접속</button>
+    </div>
+</div>
+
+<nav id="top-nav">
+    <a href="#profile">PROFILE</a>
+    <a href="#story">STORY</a>
+    <a href="#gallery">GALLERY</a>
+    <a href="#relations">RELATIONS</a>
+    <a href="#organization">ORGANIZATION</a>
+    <a href="#hidden">HIDDEN</a>
+</nav>
+
+<div id="main-wrapper">
+    <section id="profile">
+        <h2 class="section-title">SUBJECT: 서태윤 (徐泰胤)</h2>
+        <div class="profile-card">
+            <div class="profile-side">
+                <div class="profile-img"><img src="3.jpg" alt="서태윤 메인 프로필"></div>
+            </div>
+            <div class="info-side">
+                <ul class="info-list">
+                    <li><b>코드네임</b> 검은 늑대 (Black Wolf)</li>
+                    <li><b>신분</b> 전 특전사 대위 (군번 12xxx)</li>
+                    <li><b>신체</b> 190cm / 95kg / 짙은 갈색 눈</li>
+                    <li><b>상태</b> <span class="status-tag">1급 수배 / 좌측 견갑 관통상</span></li>
+                    <li><b>현재위치</b> 기밀 (당신의 거처 내 은신 중)</li>
+                </ul>
+                <p style="font-size: 0.9rem; color: var(--point-gold); font-style: italic; margin-top: 20px;">
+                    "살아남는 것이 유일한 명령이 되었습니다. 당신이 안전하다면, 제 이름 따위는 버려도 좋습니다."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="story">
+        <h2 class="section-title">MAIN STORY: 야만의 밤</h2>
+        <div style="line-height: 2; color: #ccc; text-align: justify;">
+            1979년 12월, 서울의 겨울은 유난히 길고 잔혹했습니다. 평생을 '상명하복'의 군인으로 살아온 서태윤 대위는 상부로부터 무고한 당신을 사살하라는 명령을 받습니다. <br><br>
+            그는 처음으로 항명을 선택했고, 전우들의 총구를 등진 채 당신을 품에 안고 어둠 속으로 뛰어들었습니다. <br><br>
+            그날 이후, 그는 조국의 영웅에서 1급 대역죄인이 되었습니다. 지옥 끝에서 유일한 구원인 당신을 마주한 그의 눈빛에는 고통보다 깊은 안도감이 서려 있습니다.
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2 class="section-title">GALLERY: 기밀 사진첩</h2>
+        <p style="font-size: 0.8rem; color: var(--point-gold); margin-bottom: 10px;">* 좌우로 스크롤하여 더 많은 기록을 확인하십시오.</p>
+        <div class="gallery-container">
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="1.jpg"><div class="caption">기록 01</div></div>
+                <div class="gallery-item"><img src="2.jpg"><div class="caption">기록 02</div></div>
+                <div class="gallery-item"><img src="3.jpg"><div class="caption">기록 03</div></div>
+                <div class="gallery-item"><img src="4.jpg"><div class="caption">기록 04</div></div>
+                <div class="gallery-item"><img src="5.jpg"><div class="caption">기록 05</div></div>
+                <div class="gallery-item"><img src="6.jpg"><div class="caption">기록 06</div></div>
+                <div class="gallery-item"><img src="7.jpg"><div class="caption">기록 07</div></div>
+                <div class="gallery-item"><img src="8.jpg"><div class="caption">기록 08</div></div>
+                <div class="gallery-item"><img src="9.jpg"><div class="caption">기록 09</div></div>
+                <div class="gallery-item"><img src="10.jpg"><div class="caption">기록 10</div></div>
+                <div class="gallery-item"><img src="11.jpg"><div class="caption">기록 11</div></div>
+                <div class="gallery-item"><img src="12.jpg"><div class="caption">기록 12</div></div>
+                <div class="gallery-item"><img src="13.jpg"><div class="caption">기록 13</div></div>
+                <div class="gallery-item"><img src="14.jpg"><div class="caption">기록 14</div></div>
+            </div>
+        </div>
+
+        <div class="restricted-gallery">
+            <div id="restricted-notice">
+                <div class="adult-warning">🔞 RESTRICTED AREA: NO MINORS</div>
+                <p style="font-size: 0.85rem; color: #999; margin-bottom: 20px;">본 구역은 19세 미만 열람 불가한 미공개 기록을 포함하고 있습니다.</p>
+                <button class="modal-btn" onclick="unlockAdultGallery()">성인 인증 및 열람</button>
+            </div>
+            <div class="restricted-grid" id="adult-grid">
+                <div class="restricted-item"><img src="15.jpg" alt="제한구역 15"></div>
+                <div class="restricted-item"><img src="16.jpg" alt="제한구역 16"></div>
+                <div class="restricted-item"><img src="17.jpg" alt="제한구역 17"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="relations">
+        <h2 class="section-title">RELATIONSHIP</h2>
+        <table class="relation-table">
+            <tr><th>대상</th><th>관계</th><th>상태 요약</th></tr>
+            <tr><td>당신 (User)</td><td>구원자이자 안식처</td><td style="color: #008b8b;">맹목적 헌신 및 집착</td></tr>
+            <tr><td class="enemy">강진혁 중령</td><td>전 직속상관 (청룡회)</td><td class="enemy">사살 명령 및 추격 중</td></tr>
+            <tr><td class="enemy">계엄군 추격조</td><td>적대 세력</td><td class="enemy">교전 및 수색 진행 중</td></tr>
+        </table>
+    </section>
+
+    <section id="organization">
+        <h2 class="section-title">ORGANIZATION: 청룡회(靑龍會)</h2>
+        <div style="line-height: 1.8; color: #bbb;">
+            <p>청룡회는 1979년 시국 속 군부 실세들이 결성한 <b>초법적 비밀 결사체</b>입니다. 국가 안보를 명분으로 내세우나, 실상은 체제 유지를 위해 수단과 방법을 가리지 않는 엘리트 장교 집단입니다.</p>
+            <div class="org-box">
+                <h3>[조직 신조: "국가를 위한 악(惡)은 선(善)이다"]</h3>
+                <ul style="padding-left: 20px; font-size: 0.9rem;">
+                    <li><b style="color: var(--point-gold);">강진혁 중령 (수장):</b> 청룡회의 행동대장이자 전략가. 서태윤의 과거 스승이자 현재 가장 위험한 적.</li>
+                    <li><b style="color: var(--point-gold);">작전명 '검은 겨울':</b> 주요 반대 세력 및 민간인 정보원 리스트를 작성하여 은밀히 숙청하는 작업.</li>
+                    <li><b style="color: var(--point-gold);">추격조 (Hound):</b> 탈영한 '검은 늑대' 서태윤을 사살하기 위해 투입된 최정예 살상 요원들.</li>
+                </ul>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.85rem; color: var(--point-red);">* 주의: 청룡회는 서태윤이 조직의 살생부 기밀을 소지한 것으로 판단, 당신의 거처를 실시간 추적 중입니다.</p>
+        </div>
+    </section>
+
+    <section id="hidden">
+        <h2 class="section-title">HIDDEN: 기밀 열람</h2>
+        <div class="hidden-content" id="hidden-box">
+            <div id="pw-container">
+                <p style="color: var(--point-gold); margin-bottom: 20px;">인가된 접근자만 열람 가능합니다.</p>
+                <input type="text" id="pw-input" placeholder="ACCESS CODE" autocomplete="off">
+                <br>
+                <button id="pw-btn" onclick="checkPassword()">데이터 해독</button>
+            </div>
+
+            <div id="hidden-data">
+                <div class="stamp" id="secret-stamp">TOP SECRET</div>
+                <p style="color: var(--point-red); font-weight: bold; margin-bottom: 20px;">[비공개 취조 기록: '검은 겨울'의 이면]</p>
+                <p style="font-size: 0.95rem; color: #bbb;">
+                    서태윤이 당신의 문앞에 쓰러지기까지, 그가 치른 대가는 당신의 상상보다 훨씬 처참합니다. <br><br>
+                    그는 '청룡회' 내부에서 당신을 처형하라는 1차 명령을 받았을 때, 당신 대신 처형 대상이 된 무고한 이들을 직접 매장하며 시간을 벌었습니다. <br><br>
+                    그의 손톱 밑이 늘 검게 타 있었던 것은 흙을 파헤쳐 당신의 생존 가능성을 숨기기 위함이었습니다.
+                    <br><br>
+                    가장 잔인한 진실은 그가 탈영하던 밤에 일어났습니다. 그는 자신을 막아선 가장 친했던 전우의 심장에 직접 칼을 꽂아야만 했습니다. <br><br>
+                    전우의 피가 얼굴에 튀었을 때, 그는 소리 없이 울며 당신의 이름만을 읊조렸습니다. <br><br>
+                    그가 당신을 보며 짓는 그 서툰 미소는, 사실 수많은 죽음을 등지고 쌓아 올린 죄책감의 가면입니다. <br><br>
+                    그는 당신을 지킨 것이 아니라, 당신을 지키기 위해 자신의 영혼을 갈기갈기 찢어 지옥에 던진 상태입니다.
+                    <br><br>
+                    <span style="color: var(--point-gold);">"당신은 몰라야 합니다. 내가 당신의 곁에 서기 위해 얼마나 많은 사람의 마지막 숨을 앗아왔는지... 그저 나를 미워하지 마십시오."</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer" ondblclick="triggerEasterEgg()">
+        UNAUTHORIZED ACCESS IS PROHIBITED.<br>
+        © 1979 OPERATION BLACK WINTER.
+    </div>
+</div>
+
+<div id="easter-egg-modal">
+    <div class="letter-paper">
+        <h2 style="color:var(--point-gold); border-bottom:1px solid; padding-bottom:15px; margin-top:0;">전하지 못한 수첩의 마지막 장</h2>
+        <div class="letter-text">
+            이 글을 읽고 계신다면, 저는 아마 당신 곁에서 잠시 자리를 비웠거나, 혹은 영영 돌아가지 못할 길 위에 있을지도 모르겠습니다.
+
+            제 손은 이미 너무 많은 피로 더럽혀졌습니다. 
+            명령에 따라 누군가의 숨을 거둘 때마다, 제 안의 무언가가 죽어가는 것을 느꼈습니다. 
+            하지만 당신을 처음 마주했던 그 눈 내리던 밤, 저는 처음으로 '살고 싶다'는 감각을 느꼈습니다. 
+            당신을 죽여야 할 대상이 아닌, 내가 지켜야 할 단 하나의 이유로 마주한 순간이었습니다.
+
+            당신은 저를 구원자라 부르시지만, 사실 저를 구원한 건 당신입니다. 
+            짐승처럼 살던 저에게 다시 '이름'을 찾아주셨으니까요.
+
+            혹여 제가 곁에 없더라도 밤에 창문을 꼭 걸어 잠그십시오. 
+            바람이 차가워지면 외투를 챙겨 입으시고, 가끔은... 아주 가끔은 제 이름을 조용히 불러주십시오. 
+            어느 지옥에 있더라도 그 목소리를 듣고 반드시 당신을 지키러 갈 테니까요.
+
+            죄 많은 당신의 그림자, 
+            서태윤 올림.
+        </div>
+        <p style="text-align:right; color:var(--point-red); font-size:0.8rem; margin-top:20px;">* 낡은 종이에서 옅은 화약 냄새가 납니다.</p>
+        <button class="letter-close" onclick="closeEasterEgg()">서신을 접어 숨기기</button>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('intro-overlay');
+        const modal = document.getElementById('audio-modal');
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => { 
+                overlay.style.display = 'none'; 
+                modal.style.display = 'flex'; 
+            }, 1000);
+        }, 3200);
+    });
+
+    function startApp() {
+        const modal = document.getElementById('audio-modal');
+        const nav = document.getElementById('top-nav');
+        const wrapper = document.getElementById('main-wrapper');
+        const audio = document.getElementById('bg-music');
+
+        audio.play().catch(e => console.log("Audio play failed:", e));
+
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            nav.style.opacity = '1';
+            nav.style.transition = 'opacity 1.5s';
+            wrapper.style.opacity = '1';
+            wrapper.style.transition = 'opacity 1.5s';
+            document.body.style.overflowY = 'auto';
+        }, 500);
+    }
+
+    function unlockAdultGallery() {
+        if(confirm("귀하는 만 19세 이상이며, 본 자료를 열람함에 동의하십니까?")) {
+            document.getElementById('restricted-notice').style.display = 'none';
+            document.getElementById('adult-grid').style.display = 'grid';
+        }
+    }
+
+    function checkPassword() {
+        const password = document.getElementById('pw-input').value.trim();
+        const pwContainer = document.getElementById('pw-container');
+        const hiddenData = document.getElementById('hidden-data');
+        const stamp = document.getElementById('secret-stamp');
+        const hiddenBox = document.getElementById('hidden-box');
+
+        if (password === "검은 늑대") {
+            pwContainer.style.display = "none";
+            hiddenData.style.display = "block";
+            stamp.style.display = "block";
+            hiddenBox.style.justifyContent = "flex-start";
+            hiddenBox.style.alignItems = "stretch";
+        } else {
+            alert("접근 거부: 일치하지 않는 암호입니다.");
+            document.getElementById('pw-input').value = "";
+            document.getElementById('pw-input').focus();
+        }
+    }
+
+    // [이스터에그] 관련 함수
+    function triggerEasterEgg() {
+        document.getElementById('easter-egg-modal').style.display = 'flex';
+    }
+
+    function closeEasterEgg() {
+        document.getElementById('easter-egg-modal').style.display = 'none';
+    }
+
+    document.getElementById('pw-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            checkPassword();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+        :root {
+            --bg-black: #020202;
+            --blood-dark: #4a0000;
+            --blood-bright: #9e0000;
+            --text-gray: #777;
+            --text-white: #c0c0c0;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Nanum+Myeongjo', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            /* 배경에 핏자국 같은 느낌의 그라데이션 */
+            background-image: radial-gradient(circle at 50% 50%, #150000 0%, #020202 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* 노이즈/먼지 효과 (피폐함 강조) */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .creed-text {
+            display: none; /* 처음에 숨김 */
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            line-height: 1.6;
+            text-shadow: 2px 2px 10px rgba(0,0,0,1);
+            animation: fadeInBlur 2s forwards;
+        }
+
+        .preamble {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--blood-dark);
+            padding-bottom: 20px;
+        }
+
+        .creed-item span {
+            color: var(--blood-bright);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* 흐릿하게 나타나는 애니메이션 */
+        @keyframes fadeInBlur {
+            0% { filter: blur(10px); opacity: 0; transform: translateY(10px); }
+            100% { filter: blur(0); opacity: 1; transform: translateY(0); }
+        }
+
+        /* 마지막 버튼 스타일 */
+        #next-btn {
+            display: none;
+            margin-top: 50px;
+            background: none;
+            border: 1px solid var(--blood-dark);
+            color: var(--blood-dark);
+            padding: 12px 30px;
+            font-family: 'Nanum+Myeongjo', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.5s;
+            letter-spacing: 5px;
+            animation: fadeIn 3s forwards;
+        }
+
+        #next-btn:hover {
+            color: var(--text-white);
+            border-color: var(--blood-bright);
+            box-shadow: 0 0 15px var(--blood-dark);
+            background: var(--blood-dark);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 화면 흔들림 효과 (고뇌 표현) */
+        .glitch {
+            animation: shake 0.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0,0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="creed-text preamble">
+        나는 명예와 긍지 속에 필승의 신념을 다지는<br>
+        <span class="glitch">육군 특전용사</span>로서
+    </div>
+
+    <div class="creed-text creed-item"><span>하나.</span> 조국과 민족을 위하여 충성을 다한다</div>
+    <div class="creed-text creed-item"><span>하나.</span> 명령에 복종하고 특공작전에 목숨을 건다</div>
+    <div class="creed-text creed-item"><span>하나.</span> 전우애를 바탕으로 부대 단결에 앞장선다</div>
+    <div class="creed-text creed-item"><span>하나.</span> 승리 앞에 겸손하며 패배를 모른다</div>
+    <div class="creed-text creed-item"><span>하나.</span> 강자에게 당당하고 약자를 보호한다</div>
+
+    <button id="next-btn" onclick="location.href='fugitive_report_0421.html'">기록 확인</button>
+</div>
+
+<script>
+    const lines = document.querySelectorAll('.creed-text');
+    const btn = document.getElementById('next-btn');
+    let index = 0;
+
+    function showLine() {
+        if (index < lines.length) {
+            lines[index].style.display = 'block';
+            index++;
+            setTimeout(showLine, 1500); // 1.5초 간격으로 한 문장씩 등장
+        } else {
+            btn.style.display = 'inline-block';
+        }
+    }
+
+    // 페이지 로드 후 시작
+    window.onload = () => {
+        setTimeout(showLine, 1000);
+    };
+</script>
+
+</body>
+</html>
