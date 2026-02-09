@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
 
@@ -39,13 +40,14 @@
         }
 
         .intro-title {
-            font-size: 3.5rem;
-            letter-spacing: 15px;
+            font-size: 2.5rem; /* 모바일 대응 크기 조정 */
+            letter-spacing: 10px;
             color: #ffffff;
             font-weight: 800;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 25px var(--point-red); 
             opacity: 0;
             animation: glitchFade 3.5s forwards;
+            text-align: center;
         }
 
         @keyframes glitchFade {
@@ -66,29 +68,32 @@
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(5px);
+            padding: 20px;
         }
 
         .modal-content {
             background: #111;
             border: 1px solid var(--point-red);
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             max-width: 400px;
+            width: 100%;
             box-shadow: 0 0 30px rgba(139, 0, 0, 0.3);
         }
 
-        .modal-content h3 { color: var(--point-red); letter-spacing: 5px; margin-bottom: 20px; }
-        .modal-content p { font-size: 0.9rem; line-height: 1.8; color: #ccc; margin-bottom: 30px; }
+        .modal-content h3 { color: var(--point-red); letter-spacing: 5px; margin-bottom: 20px; font-size: 1.5rem; }
+        .modal-content p { font-size: 1rem; line-height: 1.8; color: #ccc; margin-bottom: 30px; }
 
         .modal-btn {
             background: transparent;
             color: var(--point-gold);
             border: 1px solid var(--point-gold);
-            padding: 10px 30px;
+            padding: 12px 30px;
             cursor: pointer;
             font-family: 'Nanum Myeongjo', serif;
             letter-spacing: 2px;
             transition: 0.3s;
+            font-size: 1rem;
         }
         .modal-btn:hover { background: var(--point-red); color: white; border-color: var(--point-red); }
 
@@ -99,13 +104,16 @@
             background: rgba(0, 0, 0, 0.95);
             border-bottom: 1px solid var(--point-red);
             display: flex;
-            justify-content: center;
-            padding: 15px 0;
+            justify-content: flex-start;
+            overflow-x: auto; /* 모바일 상단 메뉴 스크롤 허용 */
+            padding: 15px 10px;
             z-index: 1000;
             backdrop-filter: blur(10px);
             opacity: 0;
+            -webkit-overflow-scrolling: touch;
         }
-        nav a { color: var(--text-dim); text-decoration: none; margin: 0 15px; font-size: 0.85rem; letter-spacing: 2px; transition: 0.3s; }
+        nav::-webkit-scrollbar { display: none; }
+        nav a { color: var(--text-dim); text-decoration: none; margin: 0 10px; font-size: 0.8rem; letter-spacing: 1px; transition: 0.3s; white-space: nowrap; }
         nav a:hover { color: var(--point-red); text-shadow: 0 0 8px var(--point-red); }
 
         /* --- 메인 컨텐츠 영역 --- */
@@ -113,99 +121,108 @@
             opacity: 0;
             max-width: 900px;
             margin: 0 auto;
-            padding: 100px 20px 40px 20px;
+            padding: 80px 20px 40px 20px;
         }
 
-        section { padding: 80px 0; border-bottom: 1px solid #1a1a1a; }
+        section { padding: 60px 0; border-bottom: 1px solid #1a1a1a; }
         h2.section-title {
             color: var(--point-gold);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             border-left: 4px solid var(--point-red);
             padding-left: 15px;
-            margin-bottom: 40px;
-            letter-spacing: 3px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
         /* --- 프로필 섹션 --- */
-        .profile-card { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; background: var(--container-bg); padding: 30px; border: 1px solid #222; }
-        .profile-img { width: 100%; height: 420px; border: 1px solid #333; overflow: hidden; position: relative; }
+        .profile-card { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; background: var(--container-bg); padding: 25px; border: 1px solid #222; }
+        .profile-img { width: 100%; height: auto; aspect-ratio: 1/1.2; border: 1px solid #333; overflow: hidden; position: relative; }
         .profile-img img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(0.9); }
-        .profile-img::after { content: "WANTED"; position: absolute; top: 10px; left: 10px; background: var(--point-red); color: white; padding: 2px 10px; font-weight: bold; font-size: 0.8rem; }
+        .profile-img::after { content: "WANTED"; position: absolute; top: 10px; left: 10px; background: var(--point-red); color: white; padding: 2px 10px; font-weight: bold; font-size: 0.7rem; }
         
         .info-list { list-style: none; padding: 0; }
-        .info-list li { margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 5px; font-size: 0.95rem; }
-        .info-list b { color: var(--point-gold); width: 100px; display: inline-block; font-weight: 700; }
+        .info-list li { margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 8px; font-size: 1rem; }
+        .info-list b { color: var(--point-gold); width: 90px; display: inline-block; font-weight: 700; }
         .status-tag { color: var(--point-red); font-weight: bold; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         /* --- 사진첩 --- */
-        .gallery-container { width: 100%; overflow-x: auto; padding-bottom: 20px; }
+        .gallery-container { width: 100%; overflow-x: auto; padding-bottom: 20px; -webkit-overflow-scrolling: touch; }
         .gallery-container::-webkit-scrollbar { height: 4px; }
         .gallery-container::-webkit-scrollbar-track { background: #111; }
         .gallery-container::-webkit-scrollbar-thumb { background: var(--point-red); }
 
-        .gallery-grid { display: grid; grid-template-columns: repeat(14, 220px); gap: 15px; margin-top: 20px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(14, 240px); gap: 15px; margin-top: 20px; }
         .gallery-item { position: relative; aspect-ratio: 1 / 1.3; overflow: hidden; border: 1px solid #222; cursor: pointer; background: #111; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.6); transition: 0.5s; }
         .gallery-item:hover img { filter: grayscale(0); transform: scale(1.05); }
-        .gallery-item .caption { position: absolute; bottom: 0; width: 100%; background: rgba(139, 0, 0, 0.85); color: #fff; font-size: 0.7rem; padding: 8px; text-align: center; transform: translateY(100%); transition: 0.3s; letter-spacing: 1px; }
+        .gallery-item .caption { position: absolute; bottom: 0; width: 100%; background: rgba(139, 0, 0, 0.85); color: #fff; font-size: 0.8rem; padding: 10px; text-align: center; transform: translateY(100%); transition: 0.3s; letter-spacing: 1px; }
         .gallery-item:hover .caption { transform: translateY(0); }
 
         /* --- 성인 제한 갤러리 --- */
-        .restricted-gallery { margin-top: 50px; padding: 30px; border: 1px double var(--point-red); background: rgba(20, 0, 0, 0.3); text-align: center; }
-        .adult-warning { color: var(--point-red); font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 2px; }
-        .restricted-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .restricted-gallery { margin-top: 40px; padding: 25px; border: 1px double var(--point-red); background: rgba(20, 0, 0, 0.3); text-align: center; }
+        .adult-warning { color: var(--point-red); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
+        .restricted-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
         .restricted-item { border: 1px solid var(--point-red); aspect-ratio: 1 / 1.3; overflow: hidden; }
         .restricted-item img { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- 관계도 및 조직도 --- */
         .relation-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .relation-table th, td { padding: 15px; border: 1px solid #222; text-align: center; font-size: 0.9rem; }
+        .relation-table th, td { padding: 12px; border: 1px solid #222; text-align: center; font-size: 0.9rem; word-break: keep-all; }
         .relation-table th { background: #150000; color: var(--point-gold); }
         .enemy { color: var(--point-red); font-weight: bold; }
 
-        .org-box { background: rgba(20, 0, 0, 0.5); padding: 25px; border: 1px dashed var(--point-red); margin-top: 20px; }
-        .org-box h3 { color: var(--point-red); margin-top: 0; letter-spacing: 2px; font-size: 1.1rem; }
+        .org-box { background: rgba(20, 0, 0, 0.5); padding: 20px; border: 1px dashed var(--point-red); margin-top: 20px; }
+        .org-box h3 { color: var(--point-red); margin-top: 0; letter-spacing: 1px; font-size: 1.1rem; }
 
         /* --- 히든 섹션 --- */
-        .hidden-content { background: #0a0a0a; border: 1px solid #333; padding: 40px; line-height: 2.2; position: relative; box-shadow: inset 0 0 30px #000; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .stamp { position: absolute; top: 20px; right: 40px; border: 3px solid var(--point-red); color: var(--point-red); padding: 5px 15px; font-weight: 900; transform: rotate(15deg); opacity: 0.7; font-size: 1.2rem; display: none; }
+        .hidden-content { background: #0a0a0a; border: 1px solid #333; padding: 30px; line-height: 1.8; position: relative; box-shadow: inset 0 0 30px #000; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .stamp { position: absolute; top: 10px; right: 20px; border: 2px solid var(--point-red); color: var(--point-red); padding: 4px 12px; font-weight: 900; transform: rotate(15deg); opacity: 0.7; font-size: 1rem; display: none; }
         #pw-container { text-align: center; width: 100%; }
-        #pw-input { background: #000; border: 1px solid var(--point-gold); color: var(--text-white); padding: 10px; width: 200px; text-align: center; font-family: 'Nanum Myeongjo', serif; letter-spacing: 2px; outline: none; }
-        #pw-btn { background: var(--point-red); color: white; border: none; padding: 10px 20px; cursor: pointer; margin-top: 15px; font-family: 'Nanum Myeongjo', serif; transition: 0.3s; }
-        #pw-btn:hover { background: #5a0000; }
+        #pw-input { background: #000; border: 1px solid var(--point-gold); color: var(--text-white); padding: 12px; width: 100%; max-width: 250px; text-align: center; font-family: 'Nanum Myeongjo', serif; letter-spacing: 2px; outline: none; font-size: 1rem; }
+        #pw-btn { background: var(--point-red); color: white; border: none; padding: 12px 30px; cursor: pointer; margin-top: 20px; font-family: 'Nanum Myeongjo', serif; transition: 0.3s; font-size: 1rem; width: 100%; max-width: 250px; }
+        
         #hidden-data { display: none; width: 100%; }
+        #hidden-data p { font-size: 1rem; line-height: 2; margin-bottom: 20px; }
 
-        .footer { text-align: center; font-size: 0.8rem; color: var(--text-dim); margin-top: 50px; letter-spacing: 2px; padding: 20px; cursor: help; }
+        .footer { text-align: center; font-size: 0.8rem; color: var(--text-dim); margin-top: 50px; letter-spacing: 1px; padding: 40px 20px; border-top: 1px solid #111; line-height: 1.6; }
 
         /* --- [이스터에그] 서신 모달 스타일 --- */
         #easter-egg-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 20000;
+            background: rgba(0, 0, 0, 0.98); z-index: 20000;
             display: none; justify-content: center; align-items: center;
             backdrop-filter: blur(10px);
         }
         .letter-paper {
             background: #0d0d0d; border: 1px solid var(--point-gold);
-            padding: 50px; max-width: 550px; width: 90%;
+            padding: 30px; max-width: 550px; width: 92%;
             position: relative; box-shadow: 0 0 50px rgba(194, 163, 126, 0.15);
             max-height: 85vh; overflow-y: auto;
         }
         .letter-paper::before {
-            content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            content: ""; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
             border: 1px solid rgba(194, 163, 126, 0.2); pointer-events: none;
         }
         .letter-text {
-            color: #dcdcdc; line-height: 2.2; font-size: 1rem;
+            color: #dcdcdc; line-height: 2; font-size: 1.05rem;
             white-space: pre-line; word-break: keep-all;
         }
         .letter-close {
             display: block; margin: 30px auto 0; background: transparent;
             color: var(--point-red); border: 1px solid var(--point-red);
-            padding: 8px 20px; cursor: pointer; font-family: 'Nanum Myeongjo', serif;
+            padding: 12px 25px; cursor: pointer; font-family: 'Nanum Myeongjo', serif; font-size: 1rem;
         }
 
-        @media (max-width: 600px) { .profile-card { grid-template-columns: 1fr; } nav a { margin: 0 5px; font-size: 0.65rem; } .gallery-grid { grid-template-columns: repeat(14, 180px); } .restricted-grid { grid-template-columns: 1fr; } }
+        /* --- 모달/반응형 추가 수정 --- */
+        @media (max-width: 600px) { 
+            .profile-card { grid-template-columns: 1fr; gap: 20px; } 
+            h2.section-title { font-size: 1.4rem; }
+            .info-list li { font-size: 1.05rem; }
+            .restricted-grid { grid-template-columns: repeat(2, 1fr); }
+            .intro-title { font-size: 1.8rem; letter-spacing: 6px; }
+            .modal-content p { font-size: 0.95rem; }
+        }
     </style>
 </head>
 <body>
@@ -246,9 +263,9 @@
                     <li><b>신분</b> 전 특전사 대위 (군번 12xxx)</li>
                     <li><b>신체</b> 190cm / 95kg / 짙은 갈색 눈</li>
                     <li><b>상태</b> <span class="status-tag">1급 수배 / 좌측 견갑 관통상</span></li>
-                    <li><b>현재위치</b> 기밀 (당신의 거처 내 은신 중)</li>
+                    <li><b>위치</b> 기밀 (당신의 거처 내 은신 중)</li>
                 </ul>
-                <p style="font-size: 0.9rem; color: var(--point-gold); font-style: italic; margin-top: 20px;">
+                <p style="font-size: 1rem; color: var(--point-gold); font-style: italic; margin-top: 20px; line-height: 1.6;">
                     "살아남는 것이 유일한 명령이 되었습니다. 당신이 안전하다면, 제 이름 따위는 버려도 좋습니다."
                 </p>
             </div>
@@ -257,7 +274,7 @@
 
     <section id="story">
         <h2 class="section-title">MAIN STORY: 야만의 밤</h2>
-        <div style="line-height: 2; color: #ccc; text-align: justify;">
+        <div style="line-height: 1.8; color: #ccc; text-align: justify; font-size: 1.05rem; word-break: keep-all;">
             1979년 12월, 서울의 겨울은 유난히 길고 잔혹했습니다. 평생을 '상명하복'의 군인으로 살아온 서태윤 대위는 상부로부터 무고한 당신을 사살하라는 명령을 받습니다. <br><br>
             그는 처음으로 항명을 선택했고, 전우들의 총구를 등진 채 당신을 품에 안고 어둠 속으로 뛰어들었습니다. <br><br>
             그날 이후, 그는 조국의 영웅에서 1급 대역죄인이 되었습니다. 지옥 끝에서 유일한 구원인 당신을 마주한 그의 눈빛에는 고통보다 깊은 안도감이 서려 있습니다.
@@ -266,7 +283,7 @@
 
     <section id="gallery">
         <h2 class="section-title">GALLERY: 기밀 사진첩</h2>
-        <p style="font-size: 0.8rem; color: var(--point-gold); margin-bottom: 10px;">* 좌우로 스크롤하여 더 많은 기록을 확인하십시오.</p>
+        <p style="font-size: 0.9rem; color: var(--point-gold); margin-bottom: 15px;">* 좌우로 스크롤하여 더 많은 기록을 확인하십시오.</p>
         <div class="gallery-container">
             <div class="gallery-grid">
                 <div class="gallery-item"><img src="1.jpg"><div class="caption">기록 01</div></div>
@@ -289,40 +306,42 @@
         <div class="restricted-gallery">
             <div id="restricted-notice">
                 <div class="adult-warning">🔞 RESTRICTED AREA: NO MINORS</div>
-                <p style="font-size: 0.85rem; color: #999; margin-bottom: 20px;">본 구역은 19세 미만 열람 불가한 미공개 기록을 포함하고 있습니다.</p>
+                <p style="font-size: 0.95rem; color: #999; margin-bottom: 20px;">본 구역은 성인 전용 미공개 기록을 포함하고 있습니다.</p>
                 <button class="modal-btn" onclick="unlockAdultGallery()">성인 인증 및 열람</button>
             </div>
             <div class="restricted-grid" id="adult-grid">
-                <div class="restricted-item"><img src="15.jpg" alt="제한구역 15"></div>
-                <div class="restricted-item"><img src="16.jpg" alt="제한구역 16"></div>
-                <div class="restricted-item"><img src="17.jpg" alt="제한구역 17"></div>
+                <div class="restricted-item"><img src="15.jpg"></div>
+                <div class="restricted-item"><img src="16.jpg"></div>
+                <div class="restricted-item"><img src="17.jpg"></div>
             </div>
         </div>
     </section>
 
     <section id="relations">
         <h2 class="section-title">RELATIONSHIP</h2>
-        <table class="relation-table">
-            <tr><th>대상</th><th>관계</th><th>상태 요약</th></tr>
-            <tr><td>당신 (User)</td><td>구원자이자 안식처</td><td style="color: #008b8b;">맹목적 헌신 및 집착</td></tr>
-            <tr><td class="enemy">강진혁 중령</td><td>전 직속상관 (청룡회)</td><td class="enemy">사살 명령 및 추격 중</td></tr>
-            <tr><td class="enemy">계엄군 추격조</td><td>적대 세력</td><td class="enemy">교전 및 수색 진행 중</td></tr>
-        </table>
+        <div style="overflow-x: auto;">
+            <table class="relation-table">
+                <tr><th>대상</th><th>관계</th><th>상태</th></tr>
+                <tr><td>당신 (User)</td><td>구원자 / 안식처</td><td style="color: #008b8b;">헌신 및 집착</td></tr>
+                <tr><td class="enemy">강진혁 중령</td><td>전 상관 (청룡회)</td><td class="enemy">사살 명령 중</td></tr>
+                <tr><td class="enemy">계엄 추격조</td><td>적대 세력</td><td class="enemy">수색 진행 중</td></tr>
+            </table>
+        </div>
     </section>
 
     <section id="organization">
-        <h2 class="section-title">ORGANIZATION: 청룡회(靑龍會)</h2>
-        <div style="line-height: 1.8; color: #bbb;">
-            <p>청룡회는 1979년 시국 속 군부 실세들이 결성한 <b>초법적 비밀 결사체</b>입니다. 국가 안보를 명분으로 내세우나, 실상은 체제 유지를 위해 수단과 방법을 가리지 않는 엘리트 장교 집단입니다.</p>
+        <h2 class="section-title">ORGANIZATION: 청룡회</h2>
+        <div style="line-height: 1.8; color: #bbb; font-size: 1rem;">
+            <p>청룡회는 1979년 시국 속 군부 실세들이 결성한 <b>초법적 비밀 결사체</b>입니다.</p>
             <div class="org-box">
-                <h3>[조직 신조: "국가를 위한 악(惡)은 선(善)이다"]</h3>
-                <ul style="padding-left: 20px; font-size: 0.9rem;">
-                    <li><b style="color: var(--point-gold);">강진혁 중령 (수장):</b> 청룡회의 행동대장이자 전략가. 서태윤의 과거 스승이자 현재 가장 위험한 적.</li>
-                    <li><b style="color: var(--point-gold);">작전명 '검은 겨울':</b> 주요 반대 세력 및 민간인 정보원 리스트를 작성하여 은밀히 숙청하는 작업.</li>
-                    <li><b style="color: var(--point-gold);">추격조 (Hound):</b> 탈영한 '검은 늑대' 서태윤을 사살하기 위해 투입된 최정예 살상 요원들.</li>
+                <h3>[조직 신조: "국가를 위한 악은 선이다"]</h3>
+                <ul style="padding-left: 15px; font-size: 0.95rem; margin-top: 15px;">
+                    <li><b style="color: var(--point-gold);">강진혁 중령:</b> 서태윤의 스승이자 현재 가장 위험한 적.</li>
+                    <li><b style="color: var(--point-gold);">작전명 '검은 겨울':</b> 비공개 살생부 숙청 작업.</li>
+                    <li><b style="color: var(--point-gold);">추격조 (Hound):</b> 배신자를 쫓는 최정예 살상 요원.</li>
                 </ul>
             </div>
-            <p style="margin-top: 20px; font-size: 0.85rem; color: var(--point-red);">* 주의: 청룡회는 서태윤이 조직의 살생부 기밀을 소지한 것으로 판단, 당신의 거처를 실시간 추적 중입니다.</p>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--point-red); word-break: keep-all;">* 주의: 현재 청룡회는 당신의 거처를 실시간 추적 중입니다.</p>
         </div>
     </section>
 
@@ -330,7 +349,7 @@
         <h2 class="section-title">HIDDEN: 기밀 열람</h2>
         <div class="hidden-content" id="hidden-box">
             <div id="pw-container">
-                <p style="color: var(--point-gold); margin-bottom: 20px;">인가된 접근자만 열람 가능합니다.</p>
+                <p style="color: var(--point-gold); margin-bottom: 20px; font-size: 1rem;">인가된 접근자만 열람 가능합니다.</p>
                 <input type="text" id="pw-input" placeholder="ACCESS CODE" autocomplete="off">
                 <br>
                 <button id="pw-btn" onclick="checkPassword()">데이터 해독</button>
@@ -338,16 +357,12 @@
 
             <div id="hidden-data">
                 <div class="stamp" id="secret-stamp">TOP SECRET</div>
-                <p style="color: var(--point-red); font-weight: bold; margin-bottom: 20px;">[비공개 취조 기록: '검은 겨울'의 이면]</p>
-                <p style="font-size: 0.95rem; color: #bbb;">
+                <p style="color: var(--point-red); font-weight: bold; margin-bottom: 20px; font-size: 1.1rem;">[비공개 취조 기록: '검은 겨울'의 이면]</p>
+                <p style="font-size: 1.05rem; color: #bbb; word-break: keep-all;">
                     서태윤이 당신의 문앞에 쓰러지기까지, 그가 치른 대가는 당신의 상상보다 훨씬 처참합니다. <br><br>
-                    그는 '청룡회' 내부에서 당신을 처형하라는 1차 명령을 받았을 때, 당신 대신 처형 대상이 된 무고한 이들을 직접 매장하며 시간을 벌었습니다. <br><br>
-                    그의 손톱 밑이 늘 검게 타 있었던 것은 흙을 파헤쳐 당신의 생존 가능성을 숨기기 위함이었습니다.
-                    <br><br>
-                    가장 잔인한 진실은 그가 탈영하던 밤에 일어났습니다. 그는 자신을 막아선 가장 친했던 전우의 심장에 직접 칼을 꽂아야만 했습니다. <br><br>
-                    전우의 피가 얼굴에 튀었을 때, 그는 소리 없이 울며 당신의 이름만을 읊조렸습니다. <br><br>
-                    그가 당신을 보며 짓는 그 서툰 미소는, 사실 수많은 죽음을 등지고 쌓아 올린 죄책감의 가면입니다. <br><br>
-                    그는 당신을 지킨 것이 아니라, 당신을 지키기 위해 자신의 영혼을 갈기갈기 찢어 지옥에 던진 상태입니다.
+                    그는 당신을 대신해 처형 대상이 된 무고한 이들을 직접 매장하며 시간을 벌었습니다. 손톱 밑이 늘 검게 타 있었던 것은 흙을 파헤쳐 당신의 생존 가능성을 숨기기 위함이었습니다. <br><br>
+                    그는 자신을 막아선 가장 친했던 전우의 심장에 직접 칼을 꽂아야만 했습니다. <br><br>
+                    그가 당신을 보며 짓는 서툰 미소는 수많은 죽음을 등지고 쌓아 올린 죄책감의 가면입니다. 그는 당신을 지키기 위해 자신의 영혼을 갈기갈기 찢어 지옥에 던진 상태입니다.
                     <br><br>
                     <span style="color: var(--point-gold);">"당신은 몰라야 합니다. 내가 당신의 곁에 서기 위해 얼마나 많은 사람의 마지막 숨을 앗아왔는지... 그저 나를 미워하지 마십시오."</span>
                 </p>
@@ -355,34 +370,32 @@
         </div>
     </section>
 
-    <div class="footer" ondblclick="triggerEasterEgg()">
+    <div class="footer" onclick="triggerEasterEgg()" title="더블 클릭 혹은 터치 시 기밀 서신 확인">
         UNAUTHORIZED ACCESS IS PROHIBITED.<br>
-        © 1979 OPERATION BLACK WINTER.
+        © 1979 OPERATION BLACK WINTER.<br>
+        <span style="font-size: 0.7rem; opacity: 0.5;">(기록 하단 터치 시 전하지 못한 서신 확인 가능)</span>
     </div>
 </div>
 
 <div id="easter-egg-modal">
     <div class="letter-paper">
-        <h2 style="color:var(--point-gold); border-bottom:1px solid; padding-bottom:15px; margin-top:0;">전하지 못한 수첩의 마지막 장</h2>
+        <h2 style="color:var(--point-gold); border-bottom:1px solid; padding-bottom:15px; margin-top:0; font-size: 1.3rem;">전하지 못한 수첩의 마지막 장</h2>
         <div class="letter-text">
             이 글을 읽고 계신다면, 저는 아마 당신 곁에서 잠시 자리를 비웠거나, 혹은 영영 돌아가지 못할 길 위에 있을지도 모르겠습니다.
 
             제 손은 이미 너무 많은 피로 더럽혀졌습니다. 
             명령에 따라 누군가의 숨을 거둘 때마다, 제 안의 무언가가 죽어가는 것을 느꼈습니다. 
             하지만 당신을 처음 마주했던 그 눈 내리던 밤, 저는 처음으로 '살고 싶다'는 감각을 느꼈습니다. 
-            당신을 죽여야 할 대상이 아닌, 내가 지켜야 할 단 하나의 이유로 마주한 순간이었습니다.
 
-            당신은 저를 구원자라 부르시지만, 사실 저를 구원한 건 당신입니다. 
-            짐승처럼 살던 저에게 다시 '이름'을 찾아주셨으니까요.
+            당신은 저를 구원자라 부르시지만, 사실 저를 구원한 건 당신입니다. 짐승처럼 살던 저에게 다시 '이름'을 찾아주셨으니까요.
 
-            혹여 제가 곁에 없더라도 밤에 창문을 꼭 걸어 잠그십시오. 
-            바람이 차가워지면 외투를 챙겨 입으시고, 가끔은... 아주 가끔은 제 이름을 조용히 불러주십시오. 
+            혹여 제가 곁에 없더라도 밤에 창문을 꼭 걸어 잠그십시오. 바람이 차가워지면 외투를 챙겨 입으시고, 가끔은... 아주 가끔은 제 이름을 조용히 불러주십시오. 
             어느 지옥에 있더라도 그 목소리를 듣고 반드시 당신을 지키러 갈 테니까요.
 
             죄 많은 당신의 그림자, 
             서태윤 올림.
         </div>
-        <p style="text-align:right; color:var(--point-red); font-size:0.8rem; margin-top:20px;">* 낡은 종이에서 옅은 화약 냄새가 납니다.</p>
+        <p style="text-align:right; color:var(--point-red); font-size:0.9rem; margin-top:20px;">* 낡은 종이에서 옅은 화약 냄새가 납니다.</p>
         <button class="letter-close" onclick="closeEasterEgg()">서신을 접어 숨기기</button>
     </div>
 </div>
@@ -447,13 +460,15 @@
         }
     }
 
-    // [이스터에그] 관련 함수
+    // 모바일 대응: 클릭 시 실행되도록 변경
     function triggerEasterEgg() {
         document.getElementById('easter-egg-modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 모달 열릴 때 배경 스크롤 방지
     }
 
     function closeEasterEgg() {
         document.getElementById('easter-egg-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 
     document.getElementById('pw-input').addEventListener('keydown', function (e) {
